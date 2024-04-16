@@ -1,16 +1,20 @@
-using System.Data.SqlClient;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class DatabaseConnection
+namespace WebApiFacturas.DAL
 {
-    private readonly string _connectionString;
-
-    public DatabaseConnection(string connectionString)
+    public class Startup
     {
-        _connectionString = connectionString;
-    }
+        public IConfiguration Configuration { get; }
 
-    public SqlConnection GetConnection()
-    {
-        return new SqlConnection(_connectionString);
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+        }
     }
 }

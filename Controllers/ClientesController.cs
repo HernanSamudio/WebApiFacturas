@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using WebApiFacturas.Models;
+using WebApiFacturas.Services;
 
-namespace ProyectoWebAPI.Controllers
+namespace WebApiFacturas.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/clientes")]
     [ApiController]
     public class ClientesController : ControllerBase
     {
@@ -16,13 +18,14 @@ namespace ProyectoWebAPI.Controllers
         }
 
         [HttpGet]
-        public async IActionResult GetClientes()
+        public async Task<IActionResult> GetClientes()
         {
             try
             {
                 var clientes = await _clienteService.ListarClientes();
 
-                if(!clientes.Any()) {
+                if (!clientes.Any())
+                {
                     return NoContent();
                 }
 
@@ -35,13 +38,15 @@ namespace ProyectoWebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCliente(int id)
+        public async Task<IActionResult> GetCliente(int id)
         {
             try
             {
-                var cliente = _clienteService.ObtenerCliente(id);
+                var cliente = await _clienteService.ObtenerClientePorId(id);
+
                 if (cliente == null)
-                    return NotFound();
+                    return NoContent();
+
                 return Ok(cliente);
             }
             catch (Exception ex)
@@ -51,13 +56,13 @@ namespace ProyectoWebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCliente([FromBody] Cliente cliente)
+        public async Task<IActionResult> CreateCliente([FromBody] Cliente cliente)
         {
             try
             {
                 if (_clienteService.ValidarCliente(cliente))
                 {
-                    _clienteService.CrearCliente(cliente);
+                    await _clienteService.CrearCliente(cliente);
                     return CreatedAtAction(nameof(GetCliente), new { id = cliente.Id }, cliente);
                 }
                 return BadRequest("Validación fallida para el cliente.");
@@ -69,16 +74,13 @@ namespace ProyectoWebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCliente(int id, [FromBody] Cliente cliente)
+        public async Task<IActionResult> UpdateCliente(int id, [FromBody] Cliente cliente)
         {
             try
             {
-                if (id != cliente.Id)
-                    return BadRequest("El ID del cliente no coincide.");
-
                 if (_clienteService.ValidarCliente(cliente))
                 {
-                    _clienteService.ActualizarCliente(cliente);
+                    await _clienteService.ActualizarCliente(cliente);
                     return NoContent();
                 }
                 return BadRequest("Validación fallida para el cliente.");
@@ -90,15 +92,15 @@ namespace ProyectoWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCliente(int id)
+        public async Task<IActionResult> DeleteCliente(int id)
         {
             try
             {
-                var cliente = _clienteService.ObtenerCliente(id);
+                var cliente = _clienteService.ObtenerClientePorId(id);
                 if (cliente == null)
                     return NotFound();
 
-                _clienteService.EliminarCliente(id);
+                await _clienteService.EliminarCliente(id);
                 return NoContent();
             }
             catch (Exception ex)

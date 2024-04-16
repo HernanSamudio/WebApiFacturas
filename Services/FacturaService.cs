@@ -1,56 +1,105 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebApiFacturas.Models;
+using WebApiFacturas.Repository;
 
-public class FacturaService
+namespace WebApiFacturas.Services
 {
-    private readonly FacturaRepository _facturaRepository;
-
-    public FacturaService(FacturaRepository facturaRepository)
+    public class FacturaService
     {
-        _facturaRepository = facturaRepository;
-    }
+        private readonly FacturaRepository _facturaRepository;
 
-    public async Task<IEnumerable<Factura>> ListarFacturasAsync()
-    {
-        // Lógica para obtener todas las facturas
-        return await _facturaRepository.GetAllFacturasAsync();
-    }
+        public FacturaService(FacturaRepository facturaRepository)
+        {
+            _facturaRepository = facturaRepository;
+        }
 
-    public async Task<Factura> ObtenerFacturaPorIdAsync(int id)
-    {
-        // Lógica para obtener una factura específica por ID
-        return await _facturaRepository.GetFacturaByIdAsync(id);
-    }
+        public async Task<IEnumerable<Factura>> ListarFacturas()
+        {
+            try
+            {
+                return await _facturaRepository.GetAllFacturas();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception, adjust the return value or rethrow the exception as needed
+                throw new Exception("Error al listar facturas", ex);
+            }
+        }
 
-    public async Task<Factura> CrearFacturaAsync(Factura factura)
-    {
-        ValidarFactura(factura);
-        return await _facturaRepository.AddFacturaAsync(factura);
-    }
+        public async Task<Factura> ObtenerFacturaPorId(int id)
+        {
+            try
+            {
+                return await _facturaRepository.GetFacturaById(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener la factura con ID {id}", ex);
+            }
+        }
 
-    public async Task ActualizarFacturaAsync(Factura factura)
-    {
-        ValidarFactura(factura);
-        await _facturaRepository.UpdateFacturaAsync(factura);
-    }
+        public async Task<Factura> CrearFactura(Factura factura)
+        {
+            try
+            {
+                if (!ValidarFactura(factura))
+                {
+                    throw new ArgumentException("Validación de factura fallida.");
+                }
+                return await _facturaRepository.AddFactura(factura);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la factura", ex);
+            }
+        }
 
-    public async Task EliminarFacturaAsync(int id)
-    {
-        await _facturaRepository.DeleteFacturaAsync(id);
-    }
+        public async Task<bool> ActualizarFactura(Factura factura)
+        {
+            try
+            {
+                if (!ValidarFactura(factura))
+                {
+                    return false;
+                }
+                await _facturaRepository.UpdateFactura(factura);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar la factura", ex);
+            }
+        }
 
-    private void ValidarFactura(Factura factura)
-    {
-        var nroFacturaPattern = @"^\d{3}-\d{3}-\d{6}$";
-        if (!Regex.IsMatch(factura.Nro_Factura, nroFacturaPattern))
-            throw new ArgumentException("El número de factura no cumple con el patrón requerido.");
+        public async Task<bool> EliminarFactura(int id)
+        {
+            try
+            {
+                await _facturaRepository.DeleteFactura(id);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar la factura", ex);
+            }
+        }
 
-        if (factura.Total <= 0 || factura.Total_iva5 < 0 || factura.Total_iva10 < 0 || factura.Total_iva < 0)
-            throw new ArgumentException("Los totales de la factura deben ser números positivos y el total debe ser mayor que cero.");
+        public bool ValidarFactura(Factura factura)
+        {
+            var nroFacturaPattern = @"^\d{3}-\d{3}-\d{6}$";
+            if (!Regex.IsMatch(factura.Nro_Factura, nroFacturaPattern))
+                return false;
 
-        if (string.IsNullOrWhiteSpace(factura.Total_letras) || factura.Total_letras.Length < 6)
-            throw new ArgumentException("El total en letras es obligatorio y debe tener al menos 6 caracteres.");
+            if (factura.Total <= 0 || factura.Total_iva5 < 0 || factura.Total_iva10 < 0 || factura.Total_iva < 0)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(factura.Total_letras) || factura.Total_letras.Length < 6)
+                return false;
+
+            return true;
+        }
     }
 }

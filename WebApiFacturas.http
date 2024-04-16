@@ -1,0 +1,6 @@
+@WebApiFacturas_HostAddress = http://localhost:5066
+
+GET {{WebApiFacturas_HostAddress}}/api/
+Accept: application/json
+
+###

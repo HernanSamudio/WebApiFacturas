@@ -1,125 +1,127 @@
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApiFacturas.Models;
+using WebApiFacturas.Services;
 
-[Route("api/[controller]")]
-[ApiController]
-public class FacturasController : ControllerBase
+namespace WebApiFacturas.Controllers
 {
-    private readonly FacturaService _facturaService;
-
-    public FacturasController(FacturaService facturaService)
+    [Route("api/facturas")]
+    [ApiController]
+    public class FacturasController : ControllerBase
     {
-        _facturaService = facturaService;
-    }
+        private readonly FacturaService _facturaService;
 
-    // GET: api/Facturas
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Factura>>> GetFacturas()
-    {
-        try
+        public FacturasController(FacturaService facturaService)
         {
-            var facturas = await _facturaService.ListarFacturas();
-            return Ok(facturas);
+            _facturaService = facturaService;
         }
-        catch (Exception ex)
-        {
-            // Consider logging the exception details
-            return StatusCode(500, "Error del servidor: " + ex.Message);
-        }
-    }
 
-    // GET: api/Facturas/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Factura>> GetFactura(int id)
-    {
-        try
+        // GET: api/Facturas
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Factura>>> GetFacturas()
         {
-            var factura = await _facturaService.ObtenerFacturaPorId(id);
-            if (factura == null)
+            try
             {
-                return NotFound();
+                var facturas = await _facturaService.ListarFacturas();
+                return Ok(facturas);
             }
-            return Ok(factura);
-        }
-        catch (Exception ex)
-        {
-            // Consider logging the exception details
-            return StatusCode(500, "Error del servidor: " + ex.Message);
-        }
-    }
-
-    // POST: api/Facturas
-    [HttpPost]
-    public async Task<ActionResult<Factura>> PostFactura([FromBody] Factura factura)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
+                // Consider logging the exception details
+                return StatusCode(500, "Error del servidor: " + ex.Message);
             }
-
-            await _facturaService.CrearFactura(factura);
-            return CreatedAtAction("GetFactura", new { id = factura.Id }, factura);
-        }
-        catch (Exception ex)
-        {
-            // Consider logging the exception details
-            return StatusCode(500, "Error del servidor: " + ex.Message);
-        }
-    }
-
-    // PUT: api/Facturas/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutFactura(int id, [FromBody] Factura factura)
-    {
-        if (id != factura.Id)
-        {
-            return BadRequest("El ID de la factura no coincide con el ID en la ruta.");
         }
 
-        try
+        // GET: api/Facturas/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Factura>> GetFactura(int id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var factura = await _facturaService.ObtenerFacturaPorId(id);
+                if (factura == null)
+                {
+                    return NotFound();
+                }
+                return Ok(factura);
+            }
+            catch (Exception ex)
+            {
+                // Consider logging the exception details
+                return StatusCode(500, "Error del servidor: " + ex.Message);
+            }
+        }
+
+        // POST: api/Facturas
+        [HttpPost]
+        public async Task<ActionResult<Factura>> PostFactura([FromBody] Factura factura)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                await _facturaService.CrearFactura(factura);
+                return CreatedAtAction("GetFactura", new { id = factura.Id }, factura);
+            }
+            catch (Exception ex)
+            {
+                // Consider logging the exception details
+                return StatusCode(500, "Error del servidor: " + ex.Message);
+            }
+        }
+
+        // PUT: api/Facturas/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFactura(int id, [FromBody] Factura factura)
+        {
+            if (id != factura.Id)
+            {
+                return BadRequest("El ID de la factura no coincide con el ID en la ruta.");
             }
 
-            bool updateResult = await _facturaService.ActualizarFactura(factura);
-            if (!updateResult)
+            try
             {
-                return NotFound();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                bool updateResult = await _facturaService.ActualizarFactura(factura);
+                if (!updateResult)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            // Consider logging the exception details
-            return StatusCode(500, "Error del servidor: " + ex.Message);
-        }
-    }
-
-    // DELETE: api/Facturas/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteFactura(int id)
-    {
-        try
-        {
-            bool deleteResult = await _facturaService.EliminarFactura(id);
-            if (!deleteResult)
+            catch (Exception ex)
             {
-                return NotFound();
+                // Consider logging the exception details
+                return StatusCode(500, "Error del servidor: " + ex.Message);
             }
-
-            return NoContent();
         }
-        catch (Exception ex)
+
+        // DELETE: api/Facturas/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFactura(int id)
         {
-            // Consider logging the exception details
-            return StatusCode(500, "Error del servidor: " + ex.Message);
+            try
+            {
+                bool deleteResult = await _facturaService.EliminarFactura(id);
+                if (!deleteResult)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Consider logging the exception details
+                return StatusCode(500, "Error del servidor: " + ex.Message);
+            }
         }
     }
 }
