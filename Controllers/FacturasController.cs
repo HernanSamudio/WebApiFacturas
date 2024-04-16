@@ -15,7 +15,7 @@ namespace WebApiFacturas.Controllers
             _facturaService = facturaService;
         }
 
-        // GET: api/Facturas
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Factura>>> GetFacturas()
         {
@@ -26,12 +26,12 @@ namespace WebApiFacturas.Controllers
             }
             catch (Exception ex)
             {
-                // Consider logging the exception details
+                
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }
 
-        // GET: api/Facturas/5
+       
         [HttpGet("{id}")]
         public async Task<ActionResult<Factura>> GetFactura(int id)
         {
@@ -51,7 +51,7 @@ namespace WebApiFacturas.Controllers
             }
         }
 
-        // POST: api/Facturas
+        
         [HttpPost]
         public async Task<ActionResult<Factura>> PostFactura([FromBody] Factura factura)
         {
@@ -67,12 +67,12 @@ namespace WebApiFacturas.Controllers
             }
             catch (Exception ex)
             {
-                // Consider logging the exception details
+                
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }
 
-        // PUT: api/Facturas/5
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFactura(int id, [FromBody] Factura factura)
         {
@@ -103,7 +103,7 @@ namespace WebApiFacturas.Controllers
             }
         }
 
-        // DELETE: api/Facturas/5
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFactura(int id)
         {
@@ -119,7 +119,7 @@ namespace WebApiFacturas.Controllers
             }
             catch (Exception ex)
             {
-                // Consider logging the exception details
+               
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }
