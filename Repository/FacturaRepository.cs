@@ -22,6 +22,19 @@ namespace WebApiFacturas.Repository
             return await _context.Facturas.FirstOrDefaultAsync(f => f.Id == id);
         }
 
+        public async Task<bool> DeleteFacturaPorCliente(int idCliente)
+        {
+            var factura = await _context.Facturas.Where(x=> x.Id_cliente == idCliente).FirstOrDefaultAsync();
+            if (factura != null)
+            {
+                _context.Facturas.Remove(factura);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
+        }
+
         public async Task<Factura> AddFactura(Factura factura)
         {
             _context.Facturas.Add(factura);

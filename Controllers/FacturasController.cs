@@ -46,7 +46,6 @@ namespace WebApiFacturas.Controllers
             }
             catch (Exception ex)
             {
-                // Consider logging the exception details
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }
@@ -94,11 +93,10 @@ namespace WebApiFacturas.Controllers
                     return NotFound();
                 }
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
-                // Consider logging the exception details
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }
@@ -115,11 +113,10 @@ namespace WebApiFacturas.Controllers
                     return NotFound();
                 }
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
-               
                 return StatusCode(500, "Error del servidor: " + ex.Message);
             }
         }

@@ -96,7 +96,7 @@ namespace WebApiFacturas.Services
             if (factura.Total <= 0 || factura.Total_iva5 < 0 || factura.Total_iva10 < 0 || factura.Total_iva < 0)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(factura.Total_letras) || factura.Total_letras.Length < 6)
+            if (string.IsNullOrEmpty(factura.Total_letras) || factura.Total_letras.Length < 6)
                 return false;
 
             return true;

@@ -80,8 +80,8 @@ namespace WebApiFacturas.Controllers
             {
                 if (_clienteService.ValidarCliente(cliente))
                 {
-                    await _clienteService.ActualizarCliente(cliente);
-                    return NoContent();
+                    await _clienteService.ActualizarCliente(id, cliente);
+                    return Ok();
                 }
                 return BadRequest("Validación fallida para el cliente.");
             }
@@ -96,12 +96,12 @@ namespace WebApiFacturas.Controllers
         {
             try
             {
-                var cliente = _clienteService.ObtenerClientePorId(id);
+                var cliente = await _clienteService.ObtenerClientePorId(id);
                 if (cliente == null)
                     return NotFound();
 
                 await _clienteService.EliminarCliente(id);
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {

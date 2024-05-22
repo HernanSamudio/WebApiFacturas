@@ -14,7 +14,7 @@ builder.Services.AddScoped<ClienteRepository>();
 builder.Services.AddScoped<FacturaRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
 var app = builder.Build();
 

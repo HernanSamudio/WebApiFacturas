@@ -14,12 +14,14 @@ namespace WebApiFacturas.Repository
 
         public async Task<IEnumerable<Cliente>> GetAllClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes.AsNoTracking().ToListAsync();
         }
 
         public async Task<Cliente> GetClienteById(int id)
         {
-            return await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
+            var cliente = new Cliente();
+            cliente = await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+            return cliente;
         }
 
         public async Task<Cliente> AddCliente(Cliente cliente)

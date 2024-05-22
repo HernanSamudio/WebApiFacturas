@@ -7,10 +7,12 @@ namespace WebApiFacturas.Services
     public class ClienteService
     {
         private readonly ClienteRepository _clienteRepository;
+        private readonly FacturaRepository _facturaRepository;
 
-        public ClienteService(ClienteRepository clienteRepository)
+        public ClienteService(ClienteRepository clienteRepository, FacturaRepository facturaRepository)
         {
             _clienteRepository = clienteRepository;
+            _facturaRepository = facturaRepository;
         }
 
         public async Task<IEnumerable<Cliente>> ListarClientes()
@@ -28,14 +30,15 @@ namespace WebApiFacturas.Services
             return await _clienteRepository.AddCliente(cliente);
         }
 
-        public async Task ActualizarCliente(Cliente cliente)
+        public async Task ActualizarCliente(int id, Cliente cliente)
         {
-            await _clienteRepository.UpdateCliente(cliente);
+            await _clienteRepository.UpdateCliente(id, cliente);
         }
 
         public async Task EliminarCliente(int id)
         {
-            await _clienteRepository.DeleteCliente(id);
+            var eliminarFactura = await _facturaRepository.DeleteFacturaPorCliente(id);
+            if(eliminarFactura) await _clienteRepository.DeleteCliente(id);
         }
 
         public bool ValidarCliente(Cliente cliente)
