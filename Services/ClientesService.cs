@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using WebApiFacturas.Models;
 using WebApiFacturas.Repository;
 
@@ -28,6 +29,11 @@ namespace WebApiFacturas.Services
         public async Task<Cliente> CrearCliente(Cliente cliente)
         {
             return await _clienteRepository.AddCliente(cliente);
+        }
+
+        public bool ExisteDocumento(string documento)
+        {
+            return _clienteRepository.ExisteDocumento(documento);
         }
 
         public async Task ActualizarCliente(int id, Cliente cliente)

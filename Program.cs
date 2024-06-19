@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiFacturas.Repository;
 using WebApiFacturas.Services;
+using FluentValidation.AspNetCore;
+using WebApiFacturas.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

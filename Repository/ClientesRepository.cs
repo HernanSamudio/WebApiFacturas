@@ -17,6 +17,11 @@ namespace WebApiFacturas.Repository
             return await _context.Clientes.AsNoTracking().ToListAsync();
         }
 
+        public bool ExisteDocumento(string documento)
+        {
+            return _context.Clientes.Any(c => c.Documento == documento);
+        }
+
         public async Task<Cliente> GetClienteById(int id)
         {
             var cliente = new Cliente();

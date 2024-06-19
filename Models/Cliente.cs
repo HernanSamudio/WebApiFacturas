@@ -12,5 +12,4 @@
         public string Celular { get; set; }
         public string Estado { get; set; }
     }
-
 }
